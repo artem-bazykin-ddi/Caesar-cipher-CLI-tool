@@ -8,10 +8,10 @@ const errorHandler = (error) => {
 
 const validationArgs = () => {
   program
-    .option('-a, --action', 'an action encode/decode')
-    .option('-s, --shift', 'a shift')
-    .option('-i, --input', 'an input file')
-    .option('-o, --output', 'an output file');
+    .requiredOption('-a, --action [type],', 'an action encode/decode')
+    .requiredOption('-s, --shift <number>', 'a shift')
+    .option('-i, --input <filename>', 'an input file')
+    .option('-o, --output <filename>', 'an output file');
 
   program.parse(process.argv);
 
