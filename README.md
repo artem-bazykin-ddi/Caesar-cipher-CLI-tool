@@ -1,72 +1,66 @@
-# RS School REST service
+# Caesar-cipher-CLI-tool
 
-## Prerequisites
+## Run app
 
-- Git - [Download & Install Git](https://git-scm.com/downloads).
-- Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
+1.  Install dependencies
 
-## Downloading
+        npm install
 
-```
-git clone {repository URL}
-```
+2.  To run script
 
-## Installing NPM modules
+        node my_caesar_cli -a encode -s 7 -i "./input.txt" -o "./output.txt"
+        node my_caesar_cli --action encode --shift 7 --input plain.txt --output encoded.txt
+        node my_caesar_cli --action decode --shift 7 --input decoded.txt --output plain.txt
 
-```
-npm install
-```
+## Description
 
-## Running application
+[Here](https://github.com/rolling-scopes-school/nodejs-course-template/blob/master/TASKS.md)
 
-```
-npm start
-```
+**Usage example:**
 
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
+1. _-a (--action)_ is **encode**
 
-## Testing
-
-After application running open new terminal and enter:
-
-To run all tests without authorization
-
-```
-npm test
+```bash
+$ node my_caesar_cli -a encode -s 7 -i "./input.txt" -o "./output.txt"
 ```
 
-To run only one of all test suites (users, boards or tasks)
+> input.txt
+> `This is secret. Message about "_" symbol!`
 
-```
-npm test <suite name>
-```
+> output.txt
+> `Aopz pz zljyla. Tlzzhnl hivba "_" zftivs!`
 
-To run all test with authorization
-
-```
-npm run test:auth
+```bash
+$ node my_caesar_cli --action encode --shift 7 --input plain.txt --output encoded.txt
 ```
 
-To run only specific test suite with authorization (users, boards or tasks)
+> plain.txt
+> `This is secret. Message about "_" symbol!`
 
-```
-npm run test:auth <suite name>
-```
+> encoded.txt
+> `Aopz pz zljyla. Tlzzhnl hivba "_" zftivs!`
 
-## Development
+2. _-a (--action)_ is **decode**
+   _Decoding encoded initial string with the same -s(--shift) number produces the initial string._
 
-If you're using VSCode, you can get a better developer experience from integration with [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) and [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) extensions.
-
-### Auto-fix and format
-
-```
-npm run lint
+```bash
+$ node my_caesar_cli --action decode --shift 7 --input encoded.txt --output plain.txt
 ```
 
-### Debugging in VSCode
+> encoded.txt
+> `Aopz pz zljyla. Tlzzhnl hivba "_" zftivs!`
 
-Press <kbd>F5</kbd> to debug.
+> plain.txt
+> `This is secret. Message about "_" symbol!`
 
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging
+3. _(Optional) Negative shift handling_
+
+```bash
+$ node my_caesar_cli --action encode --shift -1 --input plain.txt --output encoded.txt
+```
+
+> plain.txt
+> `This is secret. Message about "_" symbol!`
+
+> encoded.txt
+> `Sghr hr rdbqds. Ldrrzfd zants "_" rxlank!`
