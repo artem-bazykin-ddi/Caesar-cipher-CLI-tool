@@ -1,37 +1,20 @@
+const fs = require('fs');
+const path = require('path');
+const { pipeline } = require('stream');
+const transformerStream = require('./Transform');
+
 const { program } = require('commander');
-program.version('0.0.1');
+program
+  .requiredOption('-a, --action [type],', 'an action encode/decode')
+  .requiredOption('-s, --shift <number>', 'a shift')
+  .option('-i, --input <filename>', 'an input file')
+  .option('-o, --output <filename>', 'an output file');
+program.parse(process.argv);
+const { action, shift, input, output } = program.opts();
 
 const errorHandler = (error) => {
   process.stderr.write(error.message);
   process.exit(1);
-};
-
-const validationArgs = () => {
-  program
-    .requiredOption('-a, --action [type],', 'an action encode/decode')
-    .requiredOption('-s, --shift <number>', 'a shift')
-    .option('-i, --input <filename>', 'an input file')
-    .option('-o, --output <filename>', 'an output file');
-
-  program.parse(process.argv);
-
-  const { action, shift, input, output } = program.opts();
-
-  if (!action) errorHandler(new Error('Missing required action args'));
-  if (!shift) errorHandler(new Error('Missing required shift args'));
-  if (!input && !output) {
-    const readline = require('readline');
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-    });
-
-    rl.question('Please input phase: ', (answer) => {
-      const result = caesar(answer, action === 'encode' ? shift : -shift);
-      process.stderr.write(`Transformed phase: ${result}`);
-      rl.close();
-    });
-  }
 };
 
 const caesar = (input, shift) => {
@@ -53,4 +36,26 @@ const caesar = (input, shift) => {
   return output;
 };
 
-validationArgs();
+const readStream = input
+  ? fs.createReadStream(path.join(__dirname, input))
+  : process.stdin;
+
+const writeStream = output
+  ? fs.createWriteStream(path.join(__dirname, output), { flags: 'a+' })
+  : process.stdout;
+
+const transform = new transformerStream(
+  caesar,
+  action === 'encode' ? +shift : -shift
+);
+
+if (action !== 'decode' && action !== 'encode')
+  errorHandler(new Error('Please input decode or encode for action'));
+
+pipeline(readStream, transform, writeStream, (err) => {
+  if (err) {
+    errorHandler(`Pipeline failed. ${err}`);
+  } else {
+    errorHandler('Pipeline succeeded.');
+  }
+});
